@@ -1,3 +1,4 @@
+import 'package:cricket_statistics/batsmanVsBowlerSearch.dart';
 import 'package:flutter/material.dart';
 import 'stadium_search.dart';
 
@@ -12,9 +13,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.blue,
+          buttonColor: Colors.blue,
+          textTheme: TextTheme(
+            button: TextStyle(fontSize: 17, color: Colors.white),
+          )),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -64,7 +67,15 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text('Stadium Info'),
               // style: ButtonStyle(),
-            )
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BatVsBowlSearch('ipl')));
+                },
+                child: Text("Batsman Vs Bowler"))
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
