@@ -12,12 +12,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-          primarySwatch: Colors.blue,
-          buttonColor: Colors.blue,
-          textTheme: TextTheme(
-            button: TextStyle(fontSize: 17, color: Colors.white),
-          )),
+      theme: ThemeData(brightness: Brightness.light, primaryColor: Colors.grey),
+      // textTheme: TextTheme(headline6: TextStyle(color: Colors.blue))),
+      darkTheme: ThemeData(brightness: Brightness.dark),
+      // textTheme: TextTheme(headline6: TextStyle(color: Colors.white))),
+      themeMode: ThemeMode.system,
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -25,15 +24,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -61,21 +51,32 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(Theme.of(context).buttonColor)),
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => StadiumSearch()));
               },
-              child: Text('Stadium Info'),
-              // style: ButtonStyle(),
+              child: Text(
+                'Stadium Info',
+                style: Theme.of(context).textTheme.button,
+              ),
             ),
             ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).buttonColor)),
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => BatVsBowlSearch('ipl')));
                 },
-                child: Text("Batsman Vs Bowler"))
+                child: Text(
+                  "Batsman Vs Bowler",
+                  style: Theme.of(context).textTheme.button,
+                ))
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.

@@ -1,10 +1,11 @@
 // import 'dart:html';
 
-import 'package:cricket_statistics/BatsmanVsBowlInfo.dart';
+// import 'package:cricket_statistics/BatsmanVsBowlInfo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:searchfield/searchfield.dart';
+import 'BatsmanVsBowlInfo.dart';
 
 class BatVsBowlSearch extends StatefulWidget {
   final leag;
@@ -52,7 +53,7 @@ class _BatVsBowlSearchState extends State<BatVsBowlSearch> {
                       margin: EdgeInsets.all(10),
                       child: Text(
                         "Batsman",
-                        style: TextStyle(fontSize: 17),
+                        style: Theme.of(context).textTheme.headline6,
                       )),
                   Container(
                       margin: EdgeInsets.all(10),
@@ -61,7 +62,7 @@ class _BatVsBowlSearchState extends State<BatVsBowlSearch> {
                           hasOverlay: false,
                           searchInputDecoration:
                               InputDecoration(border: OutlineInputBorder()),
-                          maxSuggestionsInViewPort: 20,
+                          maxSuggestionsInViewPort: 7,
                           hint: "Search Batsman",
                           onTap: (value) {
                             batsman = pop_names[value];
@@ -70,12 +71,13 @@ class _BatVsBowlSearchState extends State<BatVsBowlSearch> {
                       margin: EdgeInsets.all(10),
                       child: Text(
                         "Bowler",
-                        style: TextStyle(fontSize: 17),
+                        style: Theme.of(context).textTheme.headline6,
                       )),
                   Container(
                       margin: EdgeInsets.all(10),
                       child: SearchField(
                         hint: "Search Bowler",
+                        maxSuggestionsInViewPort: 7,
                         searchInputDecoration:
                             InputDecoration(border: OutlineInputBorder()),
                         suggestions: player_list,

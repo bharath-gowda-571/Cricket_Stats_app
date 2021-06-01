@@ -27,6 +27,10 @@ dependencies:
   firebase_core: ^1.1.1
   searchfield: ^0.5.2
   shared_preferences: ^2.0.6
+  pie_chart: ^5.0.0
+  fl_chart: ^0.36.1
+  charts_flutter: ^0.10.0
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
