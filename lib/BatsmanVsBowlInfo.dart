@@ -6,6 +6,7 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'random_ops.dart';
 
 class StrikeRate {
   final String year;
@@ -391,6 +392,9 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey key1 = GlobalKey();
+    GlobalKey key2 = GlobalKey();
+
     const textsyle_left = TextStyle(fontSize: 17);
     return Scaffold(
       appBar: AppBar(
@@ -416,13 +420,11 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                         data_by_match[i]['balls'];
               }
               strike_rate = sum / matches.length;
+
               return SingleChildScrollView(
                   child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
-
-                      // mainAxisAlignment: MainAxisAlignment.,
-                      // physics: const AlwaysScrollableScrollPhysics(),
                       children: [
                             Container(
                                 margin: EdgeInsets.only(top: 20, bottom: 20),
@@ -562,10 +564,10 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                                 width: MediaQuery.of(context).size.width * 0.7,
                                 margin: EdgeInsets.only(
                                     left: MediaQuery.of(context).size.width *
-                                        0.1),
+                                        0.15),
                                 child: Table(
                                   columnWidths: {
-                                    0: FlexColumnWidth(0.4),
+                                    0: FlexColumnWidth(0.65),
                                     1: FlexColumnWidth(0.2),
                                     2: FlexColumnWidth(0.5)
                                   },
@@ -687,14 +689,37 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                               thickness: 2,
                             ),
                             Container(
-                                color: Theme.of(context).primaryColor,
                                 width: MediaQuery.of(context).size.width,
+                                height: 50,
+                                color: Theme.of(context).primaryColor,
                                 padding: EdgeInsets.only(
                                     top: 10, bottom: 10, left: 20),
-                                child: Text(
-                                  "Dissmisal Types",
-                                  style: Theme.of(context).textTheme.headline6,
-                                )),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Dissmissal Types",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6,
+                                      ),
+                                      IconButton(
+                                          padding: EdgeInsets.all(0),
+                                          iconSize: 25,
+                                          splashRadius: 20,
+                                          icon: Icon(Icons.share),
+                                          onPressed: () async {
+                                            share_charts(
+                                                key1,
+                                                "Dissmissal Types\n" +
+                                                    widget.batsman +
+                                                    " Vs " +
+                                                    widget.bowler +
+                                                    " in " +
+                                                    widget.leag);
+                                          })
+                                    ])),
                             Divider(
                               height: 0,
                               thickness: 3,
@@ -702,33 +727,41 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                             Divider(
                               color: Colors.transparent,
                             ),
-                            wickets.length == 0
-                                ? Container(
-                                    child: Text(
-                                    widget.bowler +
-                                        " hasn't dissmissed " +
-                                        widget.batsman,
-                                    style: TextStyle(
-                                        fontSize: 17, color: Colors.grey),
-                                    textAlign: TextAlign.center,
-                                  ))
-                                : Container(
-                                    padding: EdgeInsets.all(20),
-                                    child: PieChart(
-                                      dataMap: dataMap,
-                                      legendOptions: LegendOptions(
-                                          legendPosition: LegendPosition.left,
-                                          legendShape: BoxShape.rectangle),
-                                      initialAngleInDegree: 45,
-                                      chartValuesOptions: ChartValuesOptions(
-                                        decimalPlaces: 0,
-                                        showChartValueBackground: true,
-                                        chartValueStyle: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    )),
+                            RepaintBoundary(
+                                key: key1,
+                                child: wickets.length == 0
+                                    ? Container(
+                                        color: Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                        child: Text(
+                                          widget.bowler +
+                                              " hasn't dissmissed " +
+                                              widget.batsman,
+                                          style: TextStyle(
+                                              fontSize: 17, color: Colors.grey),
+                                          textAlign: TextAlign.center,
+                                        ))
+                                    : Container(
+                                        padding: EdgeInsets.all(20),
+                                        color: Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                        child: PieChart(
+                                          dataMap: dataMap,
+                                          legendOptions: LegendOptions(
+                                              legendPosition:
+                                                  LegendPosition.left,
+                                              legendShape: BoxShape.rectangle),
+                                          initialAngleInDegree: 45,
+                                          chartValuesOptions:
+                                              ChartValuesOptions(
+                                            decimalPlaces: 0,
+                                            showChartValueBackground: true,
+                                            chartValueStyle: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ))),
                             Divider(
                               color: Colors.transparent,
                             ),
@@ -737,14 +770,37 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                               thickness: 2,
                             ),
                             Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 50,
                                 color: Theme.of(context).primaryColor,
                                 padding: EdgeInsets.only(
                                     top: 10, bottom: 10, left: 20),
-                                width: MediaQuery.of(context).size.width,
-                                child: Text(
-                                  "Strike Rate Over Years",
-                                  style: Theme.of(context).textTheme.headline6,
-                                )),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Strike Rate Over the Years",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6,
+                                      ),
+                                      IconButton(
+                                          padding: EdgeInsets.all(0),
+                                          iconSize: 25,
+                                          splashRadius: 20,
+                                          icon: Icon(Icons.share),
+                                          onPressed: () async {
+                                            share_charts(
+                                                key2,
+                                                "Strike Rate Over Years\n" +
+                                                    widget.batsman +
+                                                    " Vs " +
+                                                    widget.bowler +
+                                                    " in " +
+                                                    widget.leag);
+                                          })
+                                    ])),
                             Divider(
                               height: 0,
                               thickness: 3,
@@ -752,76 +808,118 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                             Divider(
                               color: Colors.transparent,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Row(children: [
-                                  Container(
-                                    height: 10,
-                                    width: 10,
-                                    color: Colors.blue,
-                                  ),
-                                  Text("  <6 balls")
-                                ]),
-                                Row(children: [
-                                  Container(
-                                    height: 10,
-                                    width: 10,
-                                    color: Colors.red,
-                                  ),
-                                  Text("  <100")
-                                ]),
-                                Row(children: [
-                                  Container(
-                                    height: 10,
-                                    width: 10,
-                                    color: Colors.lightGreen,
-                                  ),
-                                  Text("  100-150")
-                                ]),
-                                Row(children: [
-                                  Container(
-                                    height: 10,
-                                    width: 10,
-                                    color: Colors.green,
-                                  ),
-                                  Text('  150+')
-                                ])
-                              ],
+                            data_by_year.length > 7
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.swipe),
+                                      Text(
+                                          "  Swipe right or left to view more data")
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
+                            Divider(
+                              color: Colors.transparent,
                             ),
-                            Container(
-                              height: 300,
-                              child: charts.BarChart(
-                                getData(data_by_year),
-                                animate: false,
-                                domainAxis: charts.OrdinalAxisSpec(
-                                  renderSpec: charts.SmallTickRendererSpec(
-                                      labelStyle: charts.TextStyleSpec(
-                                          color: charts.ColorUtil.fromDartColor(
-                                              Theme.of(context).hintColor))),
-                                ),
-                                // behaviors: [charts.Bar],
-                                barRendererDecorator: charts.BarLabelDecorator(
-                                  labelPosition: charts.BarLabelPosition.inside,
-                                ),
-                                primaryMeasureAxis: charts.NumericAxisSpec(
-                                    tickProviderSpec:
-                                        charts.BasicNumericTickProviderSpec(
-                                            desiredMinTickCount: 6),
-                                    renderSpec: charts.GridlineRendererSpec(
-                                        lineStyle: charts.LineStyleSpec(
-                                            color:
-                                                charts.ColorUtil.fromDartColor(
-                                                    Theme.of(context)
-                                                        .hintColor)),
-                                        labelStyle: charts.TextStyleSpec(
-                                          fontSize: 15,
-                                          color: charts.ColorUtil.fromDartColor(
-                                              Theme.of(context).hintColor),
-                                        ))),
-                                // barRendererDecorator: charts.BarLabelDecorator(),
-                              ),
-                            ),
+                            RepaintBoundary(
+                                key: key2,
+                                child: Container(
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    child: Column(children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Row(children: [
+                                            Container(
+                                              height: 10,
+                                              width: 10,
+                                              color: Colors.blue,
+                                            ),
+                                            Text("  <6 balls")
+                                          ]),
+                                          Row(children: [
+                                            Container(
+                                              height: 10,
+                                              width: 10,
+                                              color: Colors.red,
+                                            ),
+                                            Text("  <100")
+                                          ]),
+                                          Row(children: [
+                                            Container(
+                                              height: 10,
+                                              width: 10,
+                                              color: Colors.lightGreen,
+                                            ),
+                                            Text("  100-150")
+                                          ]),
+                                          Row(children: [
+                                            Container(
+                                              height: 10,
+                                              width: 10,
+                                              color: Colors.green,
+                                            ),
+                                            Text('  150+')
+                                          ])
+                                        ],
+                                      ),
+                                      Container(
+                                        height: 300,
+                                        padding:
+                                            EdgeInsets.only(left: 10, right: 5),
+                                        child: charts.BarChart(
+                                          getData(data_by_year),
+                                          animate: false,
+
+                                          behaviors: [
+                                            charts.PanAndZoomBehavior(),
+                                          ],
+                                          domainAxis: charts.OrdinalAxisSpec(
+                                            viewport: charts.OrdinalViewport(
+                                                '2015', 7),
+                                            renderSpec: charts.SmallTickRendererSpec(
+                                                labelStyle:
+                                                    charts.TextStyleSpec(
+                                                        color: charts.ColorUtil
+                                                            .fromDartColor(Theme
+                                                                    .of(context)
+                                                                .hintColor))),
+                                          ),
+
+                                          barRendererDecorator:
+                                              charts.BarLabelDecorator(
+                                            labelPosition:
+                                                charts.BarLabelPosition.inside,
+                                          ),
+                                          primaryMeasureAxis:
+                                              charts.NumericAxisSpec(
+                                                  tickProviderSpec: charts
+                                                      .BasicNumericTickProviderSpec(
+                                                          desiredMinTickCount:
+                                                              6),
+                                                  renderSpec: charts
+                                                      .GridlineRendererSpec(
+                                                          lineStyle: charts.LineStyleSpec(
+                                                              color: charts
+                                                                      .ColorUtil
+                                                                  .fromDartColor(
+                                                                      Theme.of(context)
+                                                                          .hintColor)),
+                                                          labelStyle: charts
+                                                              .TextStyleSpec(
+                                                            fontSize: 15,
+                                                            color: charts
+                                                                    .ColorUtil
+                                                                .fromDartColor(Theme.of(
+                                                                        context)
+                                                                    .hintColor),
+                                                          ))),
+                                          // barRendererDecorator: charts.BarLabelDecorator(),
+                                        ),
+                                      )
+                                    ]))),
                             Divider(
                               color: Colors.transparent,
                             ),

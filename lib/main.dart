@@ -1,6 +1,7 @@
 import 'package:cricket_statistics/batsmanVsBowlerSearch.dart';
 import 'package:flutter/material.dart';
 import 'stadium_search.dart';
+import 'batsmanVsTeamSearch.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       // textTheme: TextTheme(headline6: TextStyle(color: Colors.blue))),
       darkTheme: ThemeData(brightness: Brightness.dark),
       // textTheme: TextTheme(headline6: TextStyle(color: Colors.white))),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -75,6 +76,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: Text(
                   "Batsman Vs Bowler",
+                  style: Theme.of(context).textTheme.button,
+                )),
+            ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).buttonColor)),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BatsmanVsTeam('ipl')));
+                },
+                child: Text(
+                  "Batsman Vs Team",
                   style: Theme.of(context).textTheme.button,
                 ))
           ],
