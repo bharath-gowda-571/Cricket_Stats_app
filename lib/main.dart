@@ -2,6 +2,7 @@ import 'package:cricket_statistics/batsmanVsBowlerSearch.dart';
 import 'package:flutter/material.dart';
 import 'stadium_search.dart';
 import 'batsmanVsTeamSearch.dart';
+import 'bowlerVsTeamSearch.dart';
 
 void main() {
   runApp(MyApp());
@@ -35,12 +36,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -90,6 +85,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: Text(
                   "Batsman Vs Team",
+                  style: Theme.of(context).textTheme.button,
+                )),
+            ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).buttonColor)),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BowlerVsTeam('ipl')));
+                },
+                child: Text(
+                  "Bowler Vs Team",
                   style: Theme.of(context).textTheme.button,
                 ))
           ],

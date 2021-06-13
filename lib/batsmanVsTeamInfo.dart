@@ -1,13 +1,13 @@
-import 'dart:io';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
+// import 'dart:io';
+// import 'dart:typed_data';
+// import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:share/share.dart';
 import 'random_ops.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
 
 class StrikeRate {
   final String year;
@@ -454,7 +454,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
               }
             };
           }
-          if (i['runs'] == 0) {
+          if (i['runs'] == 0 && i['status'] == 'out') {
             all_data['ducks'] += 1;
             data_by_year[year]['ducks'] += 1;
           }

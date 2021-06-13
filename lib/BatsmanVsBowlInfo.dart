@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:share/share.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'random_ops.dart';
@@ -107,27 +108,22 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
       'total_wickets': 0
     };
 
-    // print('here');
     var temp = [];
     var all_info = widget.batVsBowl;
     _sharedPreferences = await SharedPreferences.getInstance();
-    print(all_info.length);
-    // print(count);
+
     var count = 0;
     for (var ball in all_info) {
       count++;
-      // print('here');
       var balls_deets = _sharedPreferences.getString(ball);
       var ball_deets_map;
       if (balls_deets == null) {
-        // print('here');
         var ball_data =
             await db.child(widget.leag).child('all_balls').child(ball).once();
         ball_deets_map = ball_data.value;
         var deets_string = json.encode(ball_data.value);
         _sharedPreferences.setString(ball, deets_string);
       } else {
-        // print('here2');
         ball_deets_map = json.decode(balls_deets);
       }
 
@@ -183,8 +179,6 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
         if (["bowled", "caught", "caught and bowled", "lbw", "stumped"]
             .contains(ball_deets_map['wicket']['kind'])) {
           temp.add(ball);
-          // print(ball);
-          // print(wickets);
           if (!wickets.containsKey(ball_deets_map['wicket']['kind'])) {
             wickets[ball_deets_map['wicket']['kind']] = 1;
           } else {
@@ -205,14 +199,9 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
       data_by_match[match_id]['balls'] += 1;
       data_by_year[year]['balls'] += 1;
     }
-    // print(wickets);
-    // print(wickets);
-    // print(wickets.values);
-    // print(count);
     for (var out in wickets.values) {
       all_data['total_wickets'] += out;
     }
-    print(temp);
   }
 
   get_data_by_year_widget() {
@@ -390,6 +379,31 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
     return lis;
   }
 
+  share_all_data(var data) {
+    // print(data);
+    var output_text =
+        widget.batsman + " Vs " + widget.bowler + ' in ' + widget.leag + '\n\t';
+    output_text += "Matches - ";
+    output_text += data['matches'].toString() + "\n\t";
+    output_text += "Total Runs - ";
+    output_text += data['runs'].toString() + "\n\t";
+    output_text += "Total Balls - ";
+    output_text += data['balls'].toString() + "\n\t";
+    output_text += "Wickets - ";
+    output_text += data['total_wickets'].toString() + "\n\t";
+    output_text += "Avg Strike Rate - ";
+    output_text += data['strike_rate'].toStringAsFixed(4) + "\n\t";
+    output_text += "Fours - ";
+    output_text += data['fours'].toString() + "\n\t";
+    output_text += "Sixes - ";
+    output_text += data['sixes'].toString() + "\n\t";
+    output_text += "Wides - ";
+    output_text += data['wides'].toString() + "\n\t";
+    output_text += "No Balls - ";
+    output_text += data['noballs'].toString();
+    Share.share(output_text);
+  }
+
   @override
   Widget build(BuildContext context) {
     GlobalKey key1 = GlobalKey();
@@ -420,7 +434,8 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                         data_by_match[i]['balls'];
               }
               strike_rate = sum / matches.length;
-
+              all_data['strike_rate'] = strike_rate;
+              all_data['matches'] = matches.length;
               return SingleChildScrollView(
                   child: Column(
                       mainAxisSize: MainAxisSize.max,
@@ -546,13 +561,29 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                             ),
                             Container(
                                 width: MediaQuery.of(context).size.width,
+                                height: 50,
                                 color: Theme.of(context).primaryColor,
                                 padding: EdgeInsets.only(
                                     top: 10, bottom: 10, left: 20),
-                                child: Text(
-                                  "All Stats",
-                                  style: Theme.of(context).textTheme.headline6,
-                                )),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "All Stats",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6,
+                                      ),
+                                      IconButton(
+                                          padding: EdgeInsets.all(0),
+                                          iconSize: 25,
+                                          splashRadius: 20,
+                                          icon: Icon(Icons.share),
+                                          onPressed: () async {
+                                            share_all_data(all_data);
+                                          })
+                                    ])),
                             Divider(
                               height: 0,
                               thickness: 3,
