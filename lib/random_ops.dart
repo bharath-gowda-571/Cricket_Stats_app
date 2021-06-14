@@ -38,3 +38,18 @@ get_better_batsman_score(dic1, dic2) {
   }
   return dic2;
 }
+
+get_better_bowling_figures(dic1, dic2) {
+  if (dic1['wickets'] > dic2['wickets']) {
+    return dic1;
+  } else if (dic1['wickets'] == dic2['wickets']) {
+    if (dic1['runs'] < dic2['runs']) {
+      return dic1;
+    } else if (dic1['runs'] == dic2['runs']) {
+      if (dic1['economy'] < dic2['economy']) {
+        return dic1;
+      }
+    }
+  }
+  return dic2;
+}
