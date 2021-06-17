@@ -6,6 +6,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:searchfield/searchfield.dart';
 import 'BatsmanVsBowlInfo.dart';
+import 'loading.dart';
+import 'error.dart';
 
 class BatVsBowlSearch extends StatefulWidget {
   final leag;
@@ -30,6 +32,7 @@ class _BatVsBowlSearchState extends State<BatVsBowlSearch> {
       pop_names = snapshot.value;
       player_list = List<String>.from(pop_names.keys);
     });
+    // print('here');
     return pop_names;
   }
 
@@ -41,11 +44,14 @@ class _BatVsBowlSearchState extends State<BatVsBowlSearch> {
       ),
       body: FutureBuilder(
         builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Error());
+          }
           switch (snapshot.connectionState) {
             case ConnectionState.active:
-              return Center(child: CircularProgressIndicator());
+              return Center(child: Loading());
             case ConnectionState.none:
-              return Center(child: CircularProgressIndicator());
+              return Center(child: Error());
             case ConnectionState.done:
               return ListView(
                 children: [
@@ -139,7 +145,7 @@ class _BatVsBowlSearchState extends State<BatVsBowlSearch> {
                 ],
               );
             case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
+              return Center(child: Loading());
           }
         },
         future: get_pop_names(),

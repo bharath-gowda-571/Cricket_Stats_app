@@ -8,6 +8,8 @@ import 'package:share/share.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'random_ops.dart';
+import 'loading.dart';
+import 'error.dart';
 
 class StrikeRate {
   final String year;
@@ -173,9 +175,6 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
         data_by_year[year]['sixes'] += 1;
       }
       if (ball_deets_map.containsKey('wicket')) {
-        print('here3');
-        print(wickets);
-
         if (["bowled", "caught", "caught and bowled", "lbw", "stumped"]
             .contains(ball_deets_map['wicket']['kind'])) {
           temp.add(ball);
@@ -380,7 +379,6 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
   }
 
   share_all_data(var data) {
-    // print(data);
     var output_text =
         widget.batsman + " Vs " + widget.bowler + ' in ' + widget.leag + '\n\t';
     output_text += "Matches - ";
@@ -419,7 +417,9 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.active:
-              return CircularProgressIndicator();
+              return Center(
+                child: Loading(),
+              );
             case ConnectionState.done:
               Map<String, double> dataMap = {};
               for (var dis in wickets.keys) {
@@ -977,9 +977,10 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                           ] +
                           get_data_by_year_widget()));
             case ConnectionState.waiting:
-              return CircularProgressIndicator();
+              return Center(child: Loading());
             case ConnectionState.none:
-              return CircularProgressIndicator();
+              return Center(child: Error());
+              ;
           }
         },
       ),

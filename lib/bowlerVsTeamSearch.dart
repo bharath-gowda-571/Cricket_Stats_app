@@ -6,6 +6,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:searchfield/searchfield.dart';
 import 'bowlerVsTeamInfo.dart';
+import 'loading.dart';
+import 'error.dart';
 
 class BowlerVsTeam extends StatefulWidget {
   final leag;
@@ -46,15 +48,15 @@ class _BowlerVsTeamState extends State<BowlerVsTeam> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Search Players"),
+        title: Text("Bowler Vs Team Search"),
       ),
       body: FutureBuilder(
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.active:
-              return Center(child: CircularProgressIndicator());
+              return Center(child: Loading());
             case ConnectionState.none:
-              return Center(child: CircularProgressIndicator());
+              return Center(child: Error());
             case ConnectionState.done:
               return ListView(
                 children: [
@@ -145,7 +147,7 @@ class _BowlerVsTeamState extends State<BowlerVsTeam> {
                 ],
               );
             case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
+              return Center(child: Loading());
           }
         },
         future: get_teams_and_pop_names(),
