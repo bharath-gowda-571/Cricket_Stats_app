@@ -155,13 +155,29 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                     rowSpacer,
                     TableRow(children: [
                       TableCell(
-                          child: Text('Average Runs', style: textsyle_left)),
+                          child: Text(
+                        'Dissmissed',
+                        style: textsyle_left,
+                      )),
                       TableCell(child: Text('-')),
                       TableCell(
                           child: Text(
-                        (data_by_y[i]['total runs'] /
-                                data_by_y[i]['matches'].length)
-                            .toStringAsFixed(2),
+                        data_by_y[i]['dissmissed'].toString(),
+                        style: textsyle_left,
+                      ))
+                    ]),
+                    rowSpacer,
+                    TableRow(children: [
+                      TableCell(
+                          child: Text('Batting Average', style: textsyle_left)),
+                      TableCell(child: Text('-')),
+                      TableCell(
+                          child: Text(
+                        data_by_y[i]['dissmissed'] != 0
+                            ? (data_by_y[i]['total runs'] /
+                                    data_by_y[i]['dissmissed'])
+                                .toStringAsFixed(2)
+                            : "NA",
                         style: textsyle_left,
                       ))
                     ]),
@@ -324,15 +340,19 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
     var keys = data_by_y.keys.toList();
     keys.sort();
     for (var i in keys) {
-      var avg = data_by_y[i]['total runs'] / data_by_y[i]['matches'].length;
-
+      var avg = data_by_y[i]['dissmissed'] != 0
+          ? (data_by_y[i]['total runs'] / data_by_y[i]['dissmissed'])
+          : 0.0;
+      // if (avg == 0) {
+      //   continue;
+      // }
       var col;
       col = charts.ColorUtil.fromDartColor(Colors.blue);
       data.add(AverageRuns(i, avg, col));
     }
     return [
       charts.Series<AverageRuns, String>(
-        id: "Average Runs",
+        id: "Batting Average",
         colorFn: (AverageRuns av, __) => av.barColor,
         domainFn: (AverageRuns av, __) => av.year,
         measureFn: (AverageRuns av, __) => av.average_runs,
@@ -356,7 +376,10 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
     output_text += "Total Balls - ";
     output_text += data['total balls'].toString();
     output_text += '\n\t';
-    output_text += "Average Runs - ";
+    output_text += "Dissmissed - ";
+    output_text += data['dissmissed'].toString();
+    output_text += '\n\t';
+    output_text += "Batting Average - ";
     output_text +=
         (data['total runs'] / widget.batVsTeam.length).toStringAsFixed(4);
     output_text += '\n\t';
@@ -417,6 +440,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
           "total runs": 0,
           'total balls': 0,
           'avg strike rate': 0,
+          'dissmissed': 0,
           'fours': 0,
           'sixes': 0,
           'ducks': 0,
@@ -445,6 +469,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
               '50s': 0,
               '100s': 0,
               '30s': 0,
+              "dissmissed": 0,
               'positions': [],
               'matches': [],
               'highest score': {
@@ -454,6 +479,12 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
               }
             };
           }
+          // Counting Dissmissed
+          if (i['status'] == 'out') {
+            all_data['dissmissed'] += 1;
+            data_by_year[year]['dissmissed'] += 1;
+          }
+          // Counting Ducks
           if (i['runs'] == 0 && i['status'] == 'out') {
             all_data['ducks'] += 1;
             data_by_year[year]['ducks'] += 1;
@@ -516,8 +547,9 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
         var max_avg = 0.0;
         for (var i in years) {
           var cur_avg;
-          cur_avg =
-              data_by_year[i]['total runs'] / data_by_year[i]['matches'].length;
+          cur_avg = data_by_year[i]['dissmissed'] != 0
+              ? data_by_year[i]['total runs'] / data_by_year[i]['dissmissed']
+              : 1.0;
           if (cur_avg > max_avg) {
             max_avg = cur_avg;
           }
@@ -668,13 +700,30 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                           rowSpacer,
                           TableRow(children: [
                             TableCell(
-                                child:
-                                    Text('Average Runs', style: textsyle_left)),
+                                child: Text(
+                              'Dissmissed',
+                              style: textsyle_left,
+                            )),
                             TableCell(child: Text('-')),
                             TableCell(
                                 child: Text(
-                              (all_data['total runs'] / widget.batVsTeam.length)
-                                  .toStringAsFixed(2),
+                              all_data['dissmissed'].toString(),
+                              style: textsyle_left,
+                            ))
+                          ]),
+                          rowSpacer,
+                          TableRow(children: [
+                            TableCell(
+                                child: Text('Batting Average',
+                                    style: textsyle_left)),
+                            TableCell(child: Text('-')),
+                            TableCell(
+                                child: Text(
+                              all_data['dissmissed'] != 0
+                                  ? (all_data['total runs'] /
+                                          all_data['dissmissed'])
+                                      .toStringAsFixed(2)
+                                  : "NA",
                               style: textsyle_left,
                             ))
                           ]),
@@ -828,7 +877,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Average Runs Over the Years",
+                              "Batting Average Over the Years",
                               style: Theme.of(context).textTheme.headline6,
                             ),
                             IconButton(
@@ -839,7 +888,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                                 onPressed: () async {
                                   share_charts(
                                       key1,
-                                      "Average Runs Over Years\n" +
+                                      "Batting Average Over Years\n" +
                                           widget.batsman +
                                           " Vs " +
                                           widget.team +

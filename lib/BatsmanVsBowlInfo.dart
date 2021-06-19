@@ -1,5 +1,3 @@
-// import 'dart:html';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
@@ -72,7 +70,7 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
       } else {
         if (sr < 100) {
           col = charts.ColorUtil.fromDartColor(Colors.red);
-        } else if (sr > 100 && sr < 150) {
+        } else if (sr >= 100 && sr < 150) {
           col = charts.ColorUtil.fromDartColor(Colors.lightGreen);
         } else {
           col = charts.ColorUtil.fromDartColor(Colors.green);
@@ -110,13 +108,12 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
       'total_wickets': 0
     };
 
-    var temp = [];
+    // var temp = [];
     var all_info = widget.batVsBowl;
     _sharedPreferences = await SharedPreferences.getInstance();
 
-    var count = 0;
+    // var count = 0;
     for (var ball in all_info) {
-      count++;
       var balls_deets = _sharedPreferences.getString(ball);
       var ball_deets_map;
       if (balls_deets == null) {
@@ -177,7 +174,7 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
       if (ball_deets_map.containsKey('wicket')) {
         if (["bowled", "caught", "caught and bowled", "lbw", "stumped"]
             .contains(ball_deets_map['wicket']['kind'])) {
-          temp.add(ball);
+          // temp.add(ball);
           if (!wickets.containsKey(ball_deets_map['wicket']['kind'])) {
             wickets[ball_deets_map['wicket']['kind']] = 1;
           } else {
@@ -276,7 +273,7 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
               margin: EdgeInsets.only(left: 30),
               child: Table(
                 columnWidths: {
-                  0: FlexColumnWidth(0.2),
+                  0: FlexColumnWidth(0.45),
                   1: FlexColumnWidth(0.1),
                   2: FlexColumnWidth(0.5)
                 },
@@ -325,6 +322,22 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                             style: Theme.of(context).textTheme.subtitle1)),
                     TableCell(
                         child: Text(data_by_year[i]['wickets'].toString(),
+                            style: Theme.of(context).textTheme.subtitle1))
+                  ]),
+                  TableRow(children: [
+                    TableCell(
+                        child: Text("Batting Average",
+                            style: Theme.of(context).textTheme.subtitle1)),
+                    TableCell(
+                        child: Text("-",
+                            style: Theme.of(context).textTheme.subtitle1)),
+                    TableCell(
+                        child: Text(
+                            data_by_year[i]['wickets'] != 0
+                                ? (data_by_year[i]['runs'] /
+                                        data_by_year[i]['wickets'])
+                                    .toString()
+                                : "NA",
                             style: Theme.of(context).textTheme.subtitle1))
                   ]),
                   TableRow(children: [
@@ -649,6 +662,23 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                                       TableCell(
                                           child: Text(all_data['total_wickets']
                                               .toString()))
+                                    ]),
+                                    rowSpacer,
+                                    TableRow(children: [
+                                      TableCell(
+                                          child: Text(
+                                        "Batting Average",
+                                        style: textsyle_left,
+                                      )),
+                                      TableCell(child: Text("-")),
+                                      TableCell(
+                                          child: Text(
+                                              all_data['total_wickets'] != 0
+                                                  ? (all_data['runs'] /
+                                                          all_data[
+                                                              'total_wickets'])
+                                                      .toStringAsFixed(2)
+                                                  : "NA"))
                                     ]),
                                     rowSpacer,
                                     TableRow(children: [
