@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(brightness: Brightness.light, primaryColor: Colors.grey),
       darkTheme: ThemeData(brightness: Brightness.dark),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -106,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               Image.asset(
                                 'assets/bowling.png',
-                                scale: 5.75,
+                                scale: 6.5,
                               ),
                               Text(
                                 " Bowler",
@@ -198,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               Image.asset(
                                 'assets/bowling.png',
-                                scale: 5.75,
+                                scale: 6.5,
                               ),
                               Text(
                                 "Bowler ",
@@ -253,11 +253,11 @@ class _MyHomePageState extends State<MyHomePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                'assets/bowling.png',
-                                scale: 5.75,
+                                'assets/batting.png',
+                                scale: 7,
                               ),
                               Text(
-                                "Bowler ",
+                                "Batsman ",
                                 style: Theme.of(context).textTheme.headline5,
                               )
                             ],
@@ -272,7 +272,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               Image.asset(
                                 'assets/bowling.png',
-                                scale: 6,
+                                scale: 6.5,
                               ),
                               Text(
                                 "Bowling\n   Type",

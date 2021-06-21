@@ -410,7 +410,7 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
                                           EdgeInsets.only(top: 10, bottom: 10),
                                       child: Image.asset(
                                         'assets/bowling.png',
-                                        scale: 6.5,
+                                        scale: 7,
                                       )),
                                   Text(
                                     widget.bowler,

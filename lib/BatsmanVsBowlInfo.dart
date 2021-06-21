@@ -404,6 +404,10 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
     output_text += data['total_wickets'].toString() + "\n\t";
     output_text += "Avg Strike Rate - ";
     output_text += data['strike_rate'].toStringAsFixed(4) + "\n\t";
+    output_text += "Batting Average - ";
+    output_text += data['total_wickets'] != 0
+        ? (data['runs'] / data['total_wickets']).toStringAsFixed(4)
+        : "NA" + "\n\t";
     output_text += "Fours - ";
     output_text += data['fours'].toString() + "\n\t";
     output_text += "Sixes - ";
@@ -520,7 +524,7 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                                                   top: 2, bottom: 2),
                                               child: Image.asset(
                                                 'assets/bowling.png',
-                                                scale: 6.5,
+                                                scale: 7.5,
                                               )),
                                           Text(
                                             widget.bowler,
@@ -655,7 +659,7 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                                     TableRow(children: [
                                       TableCell(
                                           child: Text(
-                                        "Wickets",
+                                        "Dissmissed",
                                         style: textsyle_left,
                                       )),
                                       TableCell(child: Text("-")),

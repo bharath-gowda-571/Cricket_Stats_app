@@ -49,7 +49,7 @@ class _BatsmanVsBowlingTypeState extends State<BatsmanVsBowlingType> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Batsman Vs Team Search"),
+        title: Text("Batsman Vs BowlType Search"),
       ),
       body: FutureBuilder(
         builder: (context, snapshot) {
@@ -133,7 +133,6 @@ class _BatsmanVsBowlingTypeState extends State<BatsmanVsBowlingType> {
                                   .child(bowling_type)
                                   .once()
                                   .then((snapshot) {
-                                // print(snapshot.value);
                                 if (snapshot.value == null) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(

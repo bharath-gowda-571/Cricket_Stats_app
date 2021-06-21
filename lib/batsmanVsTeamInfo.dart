@@ -42,7 +42,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
   GlobalKey key1 = GlobalKey();
   GlobalKey key2 = GlobalKey();
 
-  getData(var data_by_y, data_by_match) {
+  get_strike_rate_by_year(var data_by_y, data_by_match) {
     List<StrikeRate> data = [];
     var keys = data_by_y.keys.toList();
     keys.sort();
@@ -554,7 +554,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
             max_avg = cur_avg;
           }
         }
-        var temp2 = getData(data_by_year, data_by_match);
+        var temp2 = get_strike_rate_by_year(data_by_year, data_by_match);
 
         return SingleChildScrollView(
           child: Column(
@@ -1052,7 +1052,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                               height: 325,
                               padding: EdgeInsets.only(left: 10, right: 5),
                               child: charts.BarChart(
-                                getData(data_by_year, data_by_match),
+                                get_strike_rate_by_year(data_by_year, data_by_match),
                                 behaviors: [
                                   // Adding this behavior will allow tapping a bar to center it in the viewport
 
