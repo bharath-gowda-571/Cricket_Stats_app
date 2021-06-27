@@ -4,6 +4,7 @@ import 'batsmanVsTeamSearch.dart';
 import 'bowlerVsTeamSearch.dart';
 import 'batsmanVsBowlingTypeSearch.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'info_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(brightness: Brightness.light, primaryColor: Colors.grey),
       darkTheme: ThemeData(brightness: Brightness.dark),
       themeMode: ThemeMode.dark,
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'IPL Versus'),
     );
   }
 }
@@ -42,6 +43,15 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.info_outline),
+              onPressed: () {
+                print("something");
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => InfoPage()));
+              })
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

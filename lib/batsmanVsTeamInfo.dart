@@ -870,16 +870,17 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                   ),
                   Container(
                       width: MediaQuery.of(context).size.width,
-                      height: 50,
+                      // height: 50,
                       color: Theme.of(context).primaryColor,
-                      padding: EdgeInsets.only(top: 10, bottom: 10, left: 20),
+                      padding: EdgeInsets.only(top: 0, bottom: 0, left: 20),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            Flexible(
+                                child: Text(
                               "Batting Average Over the Years",
                               style: Theme.of(context).textTheme.headline6,
-                            ),
+                            )),
                             IconButton(
                                 padding: EdgeInsets.all(0),
                                 iconSize: 25,
@@ -960,16 +961,16 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                   ),
                   Container(
                       width: MediaQuery.of(context).size.width,
-                      height: 50,
                       color: Theme.of(context).primaryColor,
-                      padding: EdgeInsets.only(top: 10, bottom: 10, left: 20),
+                      padding: EdgeInsets.only(top: 0, bottom: 0, left: 20),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            Flexible(
+                                child: Text(
                               "Strike Rate Over the Years",
                               style: Theme.of(context).textTheme.headline6,
-                            ),
+                            )),
                             IconButton(
                                 padding: EdgeInsets.all(0),
                                 iconSize: 25,
@@ -1052,7 +1053,8 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                               height: 325,
                               padding: EdgeInsets.only(left: 10, right: 5),
                               child: charts.BarChart(
-                                get_strike_rate_by_year(data_by_year, data_by_match),
+                                get_strike_rate_by_year(
+                                    data_by_year, data_by_match),
                                 behaviors: [
                                   // Adding this behavior will allow tapping a bar to center it in the viewport
 

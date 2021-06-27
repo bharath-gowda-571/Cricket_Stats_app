@@ -471,7 +471,6 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
                                   icon: Icon(Icons.share),
                                   onPressed: () async {
                                     // this the chart to render
-                                    // print('something');
                                     share_all_text_data(all_data);
                                   })
                             ])),
@@ -658,16 +657,17 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
                     ),
                     Container(
                         width: MediaQuery.of(context).size.width,
-                        height: 50,
+                        // height: 50,
                         color: Theme.of(context).primaryColor,
                         padding: EdgeInsets.only(top: 10, bottom: 10, left: 20),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
+                              Flexible(
+                                  child: Text(
                                 "Average Economy Over the Years",
                                 style: Theme.of(context).textTheme.headline6,
-                              ),
+                              )),
                               IconButton(
                                   padding: EdgeInsets.all(0),
                                   iconSize: 25,
