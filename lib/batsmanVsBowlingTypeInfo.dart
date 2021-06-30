@@ -1019,7 +1019,7 @@ class _BatsmanVsBowlingTypeInfoState extends State<BatsmanVsBowlingTypeInfo> {
                           ),
                           Container(
                             height: 325,
-                            padding: EdgeInsets.only(left: 10, right: 5),
+                            padding: EdgeInsets.only(left: 10),
                             child: charts.BarChart(
                               get_strike_rate_by_year(
                                   data_by_year, data_by_match),
@@ -1115,7 +1115,7 @@ class _BatsmanVsBowlingTypeInfoState extends State<BatsmanVsBowlingTypeInfo> {
                     child: Container(
                       color: Theme.of(context).scaffoldBackgroundColor,
                       height: 300,
-                      padding: EdgeInsets.only(left: 10, right: 5),
+                      padding: EdgeInsets.only(left: 10),
                       child: charts.BarChart(
                         get_avg_data_for_chart(data_by_year),
                         animate: false,

@@ -99,7 +99,7 @@ class _InfoPageState extends State<InfoPage> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    " 2. Average Strike Rate",
+                    " 3. Average Strike Rate",
                     style: Theme.of(context).textTheme.headline6,
                   ),
                 ),

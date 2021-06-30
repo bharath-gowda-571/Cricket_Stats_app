@@ -707,7 +707,7 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
                         child: Container(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           height: 300,
-                          padding: EdgeInsets.only(left: 10, right: 5),
+                          padding: EdgeInsets.only(left: 10),
                           child: charts.BarChart(
                             getData(data_by_year),
                             animate: false,

@@ -918,7 +918,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                       child: Container(
                         color: Theme.of(context).scaffoldBackgroundColor,
                         height: 300,
-                        padding: EdgeInsets.only(left: 10, right: 5),
+                        padding: EdgeInsets.only(left: 10),
                         child: charts.BarChart(
                           get_avg_data_for_chart(data_by_year),
                           animate: false,
@@ -1050,8 +1050,8 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                               ],
                             ),
                             Container(
-                              height: 325,
-                              padding: EdgeInsets.only(left: 10, right: 5),
+                              height: 300,
+                              padding: EdgeInsets.only(left: 10),
                               child: charts.BarChart(
                                 get_strike_rate_by_year(
                                     data_by_year, data_by_match),

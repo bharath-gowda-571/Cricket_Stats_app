@@ -2,7 +2,7 @@
     package="com.bharath.cricket_statistics.cricket_statistics">
    <application
         android:label="cricket_statistics"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
