@@ -1,7 +1,6 @@
 // import 'dart:html';
 import 'dart:math';
 
-import 'package:cricket_statistics/batsmanVsTeamInfo.dart';
 import 'package:flutter/material.dart';
 import 'random_ops.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -12,8 +11,7 @@ class BowlerVsTeamInfo extends StatefulWidget {
   final bowlVsTeam;
   final bowler;
   final team;
-  final leag;
-  BowlerVsTeamInfo(this.bowlVsTeam, this.bowler, this.team, this.leag,
+  BowlerVsTeamInfo(this.bowlVsTeam, this.bowler, this.team, 
       {Key key})
       : super(key: key);
   @override
@@ -174,7 +172,7 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
                   TableCell(child: Text('-')),
                   TableCell(
                       child: Text(
-                    data_by_y[i]['4s'].toString(),
+                    data_by_y[i]['fours'].toString(),
                     style: textsyle_left,
                   ))
                 ]),
@@ -188,7 +186,7 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
                   TableCell(child: Text('-')),
                   TableCell(
                       child: Text(
-                    data_by_y[i]['6s'].toString(),
+                    data_by_y[i]['sixes'].toString(),
                     style: textsyle_left,
                   ))
                 ]),
@@ -252,7 +250,7 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
   share_all_text_data(data) {
     var output_text = '';
     output_text +=
-        widget.bowler + " Vs " + widget.team + " in " + widget.leag + '\n\t';
+        widget.bowler + " Vs " + widget.team + " in IPL \n\t";
     output_text += "Innings - ";
     output_text += widget.bowlVsTeam.length.toString() + '\n\t';
     output_text += "Wickets - ";
@@ -266,9 +264,9 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
     output_text += "Economy - ";
     output_text += data['economy'].toStringAsFixed(4) + '\n\t';
     output_text += "Fours - ";
-    output_text += data['4s'].toString() + '\n\t';
+    output_text += data['fours'].toString() + '\n\t';
     output_text += "Sixes - ";
-    output_text += data['6s'].toString() + '\n\t';
+    output_text += data['sixes'].toString() + '\n\t';
     output_text += "Wides - ";
     output_text += data['wides'].toString() + '\n\t';
     output_text += "No Balls - ";
@@ -298,8 +296,8 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
             'balls': 0,
             'wickets': 0,
             'noballs': 0,
-            '4s': 0,
-            '6s': 0,
+            'fours': 0,
+            'sixes': 0,
             'wides': 0,
             'noballs': 0,
             'economy': 0,
@@ -320,8 +318,8 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
                 'balls': 0,
                 'wickets': 0,
                 'noballs': 0,
-                '4s': 0,
-                '6s': 0,
+                'fours': 0,
+                'sixes': 0,
                 'wides': 0,
                 'noballs': 0,
                 'economy': 0,
@@ -340,10 +338,10 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
             data_by_year[year]['runs'] += innings['runs'];
             all_data['balls'] += innings['balls'];
             data_by_year[year]['balls'] += innings['balls'];
-            all_data['4s'] += innings['4s'];
-            data_by_year[year]['4s'] += innings['4s'];
-            all_data['6s'] += innings['6s'];
-            data_by_year[year]['6s'] += innings['6s'];
+            all_data['fours'] += innings['fours'];
+            data_by_year[year]['fours'] += innings['fours'];
+            all_data['sixes'] += innings['sixes'];
+            data_by_year[year]['sixes'] += innings['sixes'];
             all_data['wickets'] += innings['wickets'];
             data_by_year[year]['wickets'] += innings['wickets'];
             all_data['wides'] += innings['wides'];
@@ -582,7 +580,7 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
                               TableCell(child: Text('-')),
                               TableCell(
                                   child: Text(
-                                all_data['4s'].toString(),
+                                all_data['fours'].toString(),
                                 style: textsyle_left,
                               ))
                             ]),
@@ -596,7 +594,7 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
                               TableCell(child: Text('-')),
                               TableCell(
                                   child: Text(
-                                all_data['6s'].toString(),
+                                all_data['sixes'].toString(),
                                 style: textsyle_left,
                               ))
                             ]),
@@ -680,9 +678,7 @@ class _BowlerVsTeamInfoState extends State<BowlerVsTeamInfo> {
                                         widget.bowler +
                                             " Vs " +
                                             widget.team +
-                                            " in " +
-                                            widget.leag +
-                                            "\n" +
+                                            " in IPL \n" +
                                             "Average Economy Over The Years");
                                   })
                             ])),

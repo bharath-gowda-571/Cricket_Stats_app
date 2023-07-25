@@ -1,13 +1,14 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cricket_statistics/services.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:share/share.dart';
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'random_ops.dart';
 import 'loading.dart';
 import 'error.dart';
+import 'package:http/http.dart' as http;
+import 'constants.dart' as Constants;
 
 class StrikeRate {
   final String year;
@@ -17,12 +18,10 @@ class StrikeRate {
 }
 
 class BatsVsBowlInfo extends StatefulWidget {
-  final batVsBowl;
+  final data;
   final batsman;
   final bowler;
-  final leag;
-  BatsVsBowlInfo(this.batVsBowl, this.batsman, this.bowler, this.leag,
-      {Key key})
+  BatsVsBowlInfo(this.data, this.batsman, this.bowler, {Key key})
       : super(key: key);
   @override
   _BatsVsBowlInfoState createState() => _BatsVsBowlInfoState();
@@ -34,9 +33,9 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
   var matches;
   var wickets;
   var data_by_match;
+  var batsman_image;
+  var bowler_image;
   Map<String, dynamic> all_data;
-  SharedPreferences _sharedPreferences;
-  DatabaseReference db = FirebaseDatabase.instance.reference();
   final rowSpacer = TableRow(children: [
     SizedBox(
       height: 8,
@@ -108,23 +107,8 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
       'total_wickets': 0
     };
 
-    // var temp = [];
-    var all_info = widget.batVsBowl;
-    _sharedPreferences = await SharedPreferences.getInstance();
-
-    // var count = 0;
-    for (var ball in all_info) {
-      var balls_deets = _sharedPreferences.getString(ball);
-      var ball_deets_map;
-      if (balls_deets == null) {
-        var ball_data =
-            await db.child(widget.leag).child('all_balls').child(ball).once();
-        ball_deets_map = ball_data.value;
-        var deets_string = json.encode(ball_data.value);
-        _sharedPreferences.setString(ball, deets_string);
-      } else {
-        ball_deets_map = json.decode(balls_deets);
-      }
+    for (var ball in widget.data) {
+      var ball_deets_map = Map<String, dynamic>.from(ball);
 
       if (!all_data.containsKey('batting_hand')) {
         all_data['batting_hand'] = ball_deets_map['batting_hand'];
@@ -174,7 +158,6 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
       if (ball_deets_map.containsKey('wicket')) {
         if (["bowled", "caught", "caught and bowled", "lbw", "stumped"]
             .contains(ball_deets_map['wicket']['kind'])) {
-          // temp.add(ball);
           if (!wickets.containsKey(ball_deets_map['wicket']['kind'])) {
             wickets[ball_deets_map['wicket']['kind']] = 1;
           } else {
@@ -198,6 +181,9 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
     for (var out in wickets.values) {
       all_data['total_wickets'] += out;
     }
+
+    batsman_image = await getPlayerPicture(widget.batsman);
+    bowler_image = await getPlayerPicture(widget.bowler);
   }
 
   get_data_by_year_widget() {
@@ -392,8 +378,7 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
   }
 
   share_all_data(var data) {
-    var output_text =
-        widget.batsman + " Vs " + widget.bowler + ' in ' + widget.leag + '\n\t';
+    var output_text = widget.batsman + " Vs " + widget.bowler + ' in IPL \n\t';
     output_text += "Matches - ";
     output_text += data['matches'].toString() + "\n\t";
     output_text += "Total Runs - ";
@@ -461,7 +446,7 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                             Container(
                                 margin: EdgeInsets.only(top: 20, bottom: 20),
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
@@ -469,43 +454,55 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.4,
-                                        child: Column(children: [
-                                          Container(
-                                              margin: EdgeInsets.only(
-                                                  top: 10, bottom: 10),
-                                              child: Image.asset(
-                                                'assets/batting.png',
-                                                scale: 8,
-                                              )),
-                                          Text(
-                                            widget.batsman,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Container(
-                                              margin: EdgeInsets.all(5),
-                                              child: RichText(
-                                                  text: TextSpan(
-                                                      style:
-                                                          DefaultTextStyle.of(
-                                                                  context)
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                  margin: EdgeInsets.only(
+                                                      top: 10, bottom: 10),
+                                                  child: batsman_image == null
+                                                      ? Image.asset(
+                                                          'assets/placeholder_profile.png',
+                                                          height: 130,
+                                                        )
+                                                      : Image.memory(
+                                                          base64Decode(
+                                                              batsman_image
+                                                                  .substring(
+                                                                      22)),
+                                                          height: 130,
+                                                        )),
+                                              Text(
+                                                widget.batsman,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Container(
+                                                  margin: EdgeInsets.all(5),
+                                                  child: RichText(
+                                                      text: TextSpan(
+                                                          style: DefaultTextStyle
+                                                                  .of(context)
                                                               .style,
-                                                      children: [
-                                                    TextSpan(
-                                                      text: "Batting Hand: ",
-                                                    ),
-                                                    TextSpan(
-                                                        text: capitalize(
-                                                            all_data[
-                                                                'batting_hand']),
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold))
-                                                  ])))
-                                        ])),
+                                                          children: [
+                                                        TextSpan(
+                                                          text:
+                                                              "Batting Hand: ",
+                                                        ),
+                                                        TextSpan(
+                                                            text: capitalize(
+                                                                all_data[
+                                                                    'batting_hand']),
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold))
+                                                      ])))
+                                            ])),
                                     Container(
                                         padding: EdgeInsets.only(top: 40),
                                         child: Image.asset(
@@ -518,58 +515,76 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.4,
-                                        child: Column(children: [
-                                          Container(
-                                              margin: EdgeInsets.only(
-                                                  top: 2, bottom: 2),
-                                              child: Image.asset(
-                                                'assets/bowling.png',
-                                                scale: 7.5,
-                                              )),
-                                          Text(
-                                            widget.bowler,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          RichText(
-                                              text: TextSpan(
-                                                  style: DefaultTextStyle.of(
-                                                          context)
-                                                      .style,
-                                                  children: [
-                                                TextSpan(
-                                                  text: "Bowling Hand: ",
-                                                ),
-                                                TextSpan(
-                                                    text: capitalize(all_data[
-                                                        'bowling_hand']),
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold))
-                                              ])),
-                                          Divider(
-                                            color: Colors.transparent,
-                                            height: 2,
-                                          ),
-                                          RichText(
-                                              text: TextSpan(
-                                                  style: DefaultTextStyle.of(
-                                                          context)
-                                                      .style,
-                                                  children: [
-                                                TextSpan(
-                                                  text: "Bowling Type: ",
-                                                ),
-                                                TextSpan(
-                                                    text: capitalize(all_data[
-                                                        'bowling_type']),
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold))
-                                              ]))
-                                        ]))
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                  margin: EdgeInsets.only(
+                                                      top: 10, bottom: 10),
+                                                  child: bowler_image == null
+                                                      ? Image.asset(
+                                                          'assets/placeholder_profile.png',
+                                                          height: 130,
+                                                        )
+                                                      : Image.memory(
+                                                          base64Decode(
+                                                              bowler_image
+                                                                  .substring(
+                                                                      22)),
+                                                          height: 130,
+                                                        )),
+                                              Text(
+                                                widget.bowler,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              RichText(
+                                                  text: TextSpan(
+                                                      style:
+                                                          DefaultTextStyle.of(
+                                                                  context)
+                                                              .style,
+                                                      children: [
+                                                    TextSpan(
+                                                      text: "Bowling Hand: ",
+                                                    ),
+                                                    TextSpan(
+                                                        text: capitalize(
+                                                            all_data[
+                                                                'bowling_hand']),
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold))
+                                                  ])),
+                                              Divider(
+                                                color: Colors.transparent,
+                                                height: 2,
+                                              ),
+                                              RichText(
+                                                  text: TextSpan(
+                                                      style:
+                                                          DefaultTextStyle.of(
+                                                                  context)
+                                                              .style,
+                                                      children: [
+                                                    TextSpan(
+                                                      text: "Bowling Type: ",
+                                                    ),
+                                                    TextSpan(
+                                                        text: capitalize(
+                                                            all_data[
+                                                                'bowling_type']),
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold))
+                                                  ]))
+                                            ]))
                                   ],
                                 )),
                             Divider(
@@ -781,8 +796,7 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                                                     widget.batsman +
                                                     " Vs " +
                                                     widget.bowler +
-                                                    " in " +
-                                                    widget.leag);
+                                                    " in IPL");
                                           })
                                     ])),
                             Divider(
@@ -862,8 +876,7 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
                                                     widget.batsman +
                                                     " Vs " +
                                                     widget.bowler +
-                                                    " in " +
-                                                    widget.leag);
+                                                    " in IPL");
                                           })
                                     ])),
                             Divider(
@@ -1013,8 +1026,8 @@ class _BatsVsBowlInfoState extends State<BatsVsBowlInfo> {
               return Center(child: Loading());
             case ConnectionState.none:
               return Center(child: Error());
-              ;
           }
+          return Center(child: Error());
         },
       ),
     );

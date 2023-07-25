@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'batsmanVsTeamSearch.dart';
 import 'bowlerVsTeamSearch.dart';
 import 'batsmanVsBowlingTypeSearch.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'info_page.dart';
 
 void main() {
@@ -22,6 +21,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(brightness: Brightness.dark),
       themeMode: ThemeMode.dark,
       home: MyHomePage(title: 'IPL Versus'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -38,8 +38,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    // SharedPreferences _sharedPreferences;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -238,62 +236,62 @@ class _MyHomePageState extends State<MyHomePage> {
             Divider(
               color: Colors.transparent,
             ),
-            Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                margin: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.05,
-                    right: MediaQuery.of(context).size.width * 0.05),
-                height: 150,
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            Theme.of(context).buttonColor)),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  BatsmanVsBowlingType('ipl')));
-                    },
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/batting.png',
-                                scale: 7,
-                              ),
-                              Text(
-                                "Batsman ",
-                                style: Theme.of(context).textTheme.headline5,
-                              )
-                            ],
-                          ),
-                          Image.asset(
-                            "assets/vs.png",
-                            scale: 9,
-                            color: Theme.of(context).hintColor,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/bowling.png',
-                                scale: 6.5,
-                              ),
-                              Text(
-                                "Bowling\n   Type",
-                                style: Theme.of(context).textTheme.headline5,
-                              )
-                            ],
-                          ),
-                        ]))),
-            Divider(
-              color: Colors.transparent,
-            ),
+            // Container(
+            //     width: MediaQuery.of(context).size.width * 0.9,
+            //     margin: EdgeInsets.only(
+            //         left: MediaQuery.of(context).size.width * 0.05,
+            //         right: MediaQuery.of(context).size.width * 0.05),
+            //     height: 150,
+            //     child: ElevatedButton(
+            //         style: ButtonStyle(
+            //             backgroundColor: MaterialStateProperty.all(
+            //                 Theme.of(context).buttonColor)),
+            //         onPressed: () {
+            //           Navigator.push(
+            //               context,
+            //               MaterialPageRoute(
+            //                   builder: (context) =>
+            //                       BatsmanVsBowlingType('ipl')));
+            //         },
+            //         child: Row(
+            //             crossAxisAlignment: CrossAxisAlignment.center,
+            //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //             children: [
+            //               Column(
+            //                 mainAxisAlignment: MainAxisAlignment.center,
+            //                 children: [
+            //                   Image.asset(
+            //                     'assets/batting.png',
+            //                     scale: 7,
+            //                   ),
+            //                   Text(
+            //                     "Batsman ",
+            //                     style: Theme.of(context).textTheme.headline5,
+            //                   )
+            //                 ],
+            //               ),
+            //               Image.asset(
+            //                 "assets/vs.png",
+            //                 scale: 9,
+            //                 color: Theme.of(context).hintColor,
+            //               ),
+            //               Column(
+            //                 mainAxisAlignment: MainAxisAlignment.center,
+            //                 children: [
+            //                   Image.asset(
+            //                     'assets/bowling.png',
+            //                     scale: 6.5,
+            //                   ),
+            //                   Text(
+            //                     "Bowling\n   Type",
+            //                     style: Theme.of(context).textTheme.headline5,
+            //                   )
+            //                 ],
+            //               ),
+            //             ]))),
+            // Divider(
+            //   color: Colors.transparent,
+            // ),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.

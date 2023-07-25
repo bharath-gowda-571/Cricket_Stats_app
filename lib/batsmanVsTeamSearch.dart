@@ -1,12 +1,10 @@
-import 'dart:developer';
-
 import 'package:cricket_statistics/batsmanVsTeamInfo.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:searchfield/searchfield.dart';
 import 'loading.dart';
 import 'error.dart';
+import 'services.dart';
+import 'dart:convert';
 
 class BatsmanVsTeam extends StatefulWidget {
   final leag;
@@ -17,29 +15,30 @@ class BatsmanVsTeam extends StatefulWidget {
 }
 
 class _BatsmanVsTeamState extends State<BatsmanVsTeam> {
-  final db = FirebaseDatabase.instance.reference();
   var teams;
   var batsman = '';
   var player_list;
-  var pop_names;
+  Map<String, String> pop_names = {};
+
   var team = '';
   Future get_teams_and_pop_names() async {
-    await db
-        .child(widget.leag)
-        .child('teams')
-        .once()
-        .then((DataSnapshot snapshot) {
-      var teams_temp = snapshot.value;
-      teams = List<String>.from(teams_temp);
-    });
-    await db
-        .child(widget.leag)
-        .child('player_pop_names')
-        .once()
-        .then((DataSnapshot snapshot) {
-      pop_names = snapshot.value;
-      player_list = List<String>.from(pop_names.keys);
-    });
+    teams = await getTeamNames();
+    final response = await getPopNamesFromAPI();
+    var temp = [];
+    if (response.statusCode == 200) {
+      var res_body = response.body;
+      var parsed = jsonDecode(res_body);
+
+      parsed.forEach((player) {
+        var player_dict = Map<String, String>.from(player);
+        pop_names[player_dict['popular_name']] = player_dict['name'];
+        temp.add(player_dict['popular_name']);
+      });
+      player_list = List<String>.from(temp);
+    } else {
+      throw Exception('Failed to load');
+    }
+    print(player_list.runtimeType);
     return teams;
   }
 
@@ -104,7 +103,7 @@ class _BatsmanVsTeamState extends State<BatsmanVsTeam> {
                                   MaterialStateProperty.all(EdgeInsets.all(15)),
                               backgroundColor: MaterialStateProperty.all(
                                   Theme.of(context).buttonColor)),
-                          onPressed: () {
+                          onPressed: () async {
                             if (batsman == '') {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -115,31 +114,19 @@ class _BatsmanVsTeamState extends State<BatsmanVsTeam> {
                                   SnackBar(
                                       content: Text("Please select a Team")));
                             } else {
-                              db
-                                  .child(widget.leag)
-                                  .child("player_vs_team")
-                                  .child(batsman)
-                                  .child('batting')
-                                  .child(team)
-                                  .once()
-                                  .then((snapshot) {
-                                // print(snapshot.value);
-                                if (snapshot.value == null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(
-                                              "This player has never played against this team")));
-                                } else {
-                                  // print(batsman + "," + team);
-                                  // print('something');
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              BatsmanVsTeamInfo(snapshot.value,
-                                                  batsman, team, widget.leag)));
-                                }
-                              });
+                              var data = await getPlayerVsTeamData(
+                                  batsman, team, "batting");
+                              if (data == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        "This player has never played against this team")));
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => BatsmanVsTeamInfo(
+                                            data, batsman, team)));
+                              }
                             }
                           },
                           child: Text(
@@ -151,6 +138,7 @@ class _BatsmanVsTeamState extends State<BatsmanVsTeam> {
             case ConnectionState.waiting:
               return Center(child: Loading());
           }
+          return Center(child: Error());
         },
         future: get_teams_and_pop_names(),
       ),

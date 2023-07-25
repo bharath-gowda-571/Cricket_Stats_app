@@ -1,13 +1,12 @@
-// import 'dart:html';
-
-// import 'package:cricket_statistics/BatsmanVsBowlInfo.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:searchfield/searchfield.dart';
 import 'BatsmanVsBowlInfo.dart';
 import 'loading.dart';
 import 'error.dart';
+import 'package:http/http.dart' as http;
+import 'constants.dart' as Constants;
+import 'dart:convert';
+import 'services.dart';
 
 class BatVsBowlSearch extends StatefulWidget {
   final leag;
@@ -17,22 +16,28 @@ class BatVsBowlSearch extends StatefulWidget {
 }
 
 class _BatVsBowlSearchState extends State<BatVsBowlSearch> {
-  final db = FirebaseDatabase.instance.reference();
-  var pop_names;
+  Map<String, String> pop_names = {};
   var batsman = '';
   var bowler = '';
   var player_list;
 
   Future get_pop_names() async {
-    await db
-        .child(widget.leag)
-        .child('player_pop_names')
-        .once()
-        .then((DataSnapshot snapshot) {
-      pop_names = snapshot.value;
-      player_list = List<String>.from(pop_names.keys);
-    });
-    // print('here');
+    final response = await getPopNamesFromAPI();
+    var temp = [];
+    if (response.statusCode == 200) {
+      var res_body = response.body;
+      var parsed = jsonDecode(res_body);
+
+      parsed.forEach((player) {
+        var player_dict = Map<String, String>.from(player);
+
+        pop_names[player_dict['popular_name']] = player_dict['name'];
+        temp.add(player_dict['popular_name']);
+      });
+      player_list = List<String>.from(temp);
+    } else {
+      throw Exception('Failed to load');
+    }
     return pop_names;
   }
 
@@ -100,7 +105,7 @@ class _BatVsBowlSearchState extends State<BatVsBowlSearch> {
                                   MaterialStateProperty.all(EdgeInsets.all(15)),
                               backgroundColor: MaterialStateProperty.all(
                                   Theme.of(context).buttonColor)),
-                          onPressed: () {
+                          onPressed: () async{
                             if (batsman == '') {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -111,16 +116,13 @@ class _BatVsBowlSearchState extends State<BatVsBowlSearch> {
                                   SnackBar(
                                       content: Text("Please select a bowler")));
                             } else {
-                              db
-                                  .child(widget.leag)
-                                  .child("players_balls_involved")
-                                  .child(batsman)
-                                  .child("batting")
-                                  .child(bowler)
-                                  .once()
-                                  .then((snapshot) {
-                                // print(snapshot.value);
-                                if (snapshot.value == null) {
+                              var response =
+                                  await getBatsmanVsBowlerData(batsman, bowler);
+                              if (response.statusCode == 200) {
+                                var res_body = response.body;
+                                print(res_body.runtimeType);
+                                  var parsed = jsonDecode(res_body);
+                                if (parsed == null) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text(
@@ -130,12 +132,12 @@ class _BatVsBowlSearchState extends State<BatVsBowlSearch> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => BatsVsBowlInfo(
-                                              snapshot.value,
-                                              batsman,
-                                              bowler,
-                                              widget.leag)));
+                                              parsed, batsman, bowler)));
                                 }
-                              });
+                              } else {
+                                throw Exception('Failed to load');
+                              }
+                             
                             }
                           },
                           child: Text(
@@ -147,6 +149,7 @@ class _BatVsBowlSearchState extends State<BatVsBowlSearch> {
             case ConnectionState.waiting:
               return Center(child: Loading());
           }
+          return Center(child: Loading());;
         },
         future: get_pop_names(),
       ),

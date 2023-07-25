@@ -27,9 +27,7 @@ class BatsmanVsTeamInfo extends StatefulWidget {
   final batVsTeam;
   final batsman;
   final team;
-  final leag;
-  BatsmanVsTeamInfo(this.batVsTeam, this.batsman, this.team, this.leag,
-      {Key key})
+  BatsmanVsTeamInfo(this.batVsTeam, this.batsman, this.team, {Key key})
       : super(key: key);
   @override
   _BatsmanVsTeamInfoState createState() => _BatsmanVsTeamInfoState();
@@ -365,8 +363,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
 
   share_all_data_text(data) {
     var output_text = '';
-    output_text +=
-        widget.batsman + " Vs " + widget.team + " in " + widget.leag + '\n\t';
+    output_text += widget.batsman + " Vs " + widget.team + " in IPL \n\t";
     output_text += "Innings - ";
     output_text += widget.batVsTeam.length.toString();
     output_text += '\n\t';
@@ -502,12 +499,12 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
           all_data['total runs'] += i['runs'];
           all_data['total balls'] += i['balls'];
           temp += i['balls'] == 0 ? 0.0 : (i['runs'] * 100) / i['balls'];
-          all_data['fours'] += i['4s'];
-          all_data['sixes'] += i['6s'];
+          all_data['fours'] += i['fours'];
+          all_data['sixes'] += i['sixes'];
           data_by_year[year]['total runs'] += i['runs'];
           data_by_year[year]['total balls'] += i['balls'];
-          data_by_year[year]['fours'] += i['4s'];
-          data_by_year[year]['sixes'] += i['6s'];
+          data_by_year[year]['fours'] += i['fours'];
+          data_by_year[year]['sixes'] += i['sixes'];
 
           if (!data_by_year[year]['positions'].contains(i['position'])) {
             data_by_year[year]['positions'].add(i['position']);
@@ -893,8 +890,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                                           widget.batsman +
                                           " Vs " +
                                           widget.team +
-                                          " in " +
-                                          widget.leag);
+                                          " in IPL");
                                 })
                           ])),
                   Divider(
@@ -983,8 +979,7 @@ class _BatsmanVsTeamInfoState extends State<BatsmanVsTeamInfo> {
                                           widget.batsman +
                                           " Vs " +
                                           widget.team +
-                                          " in " +
-                                          widget.leag);
+                                          " in IPL");
                                 })
                           ])),
                   Divider(
